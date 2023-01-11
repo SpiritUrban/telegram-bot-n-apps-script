@@ -1,50 +1,93 @@
-const x = {
-  "update_id":66389017,
-  "message":{
-    "message_id":839,
-    "from":{
-      "id":428521383,
-      "is_bot":false,
-      "first_name":"Виталий",
-      "last_name":"Дячук",
-      "language_code":"en"
+
+
+const botBtn = {
+  "update_id": 66389105,
+  "callback_query": {
+    "id": "1840485328239246397",
+    "from": {
+      "id": 428521383,
+      "is_bot": false,
+      "first_name": "Виталий",
+      "last_name": "Дячук",
+      "language_code": "en"
     },
-    "chat":{
-      "id":428521383,
-      "first_name":"Виталий",
-      "last_name":"Дячук",
-      "type":"private"
+    "message": {
+      "message_id": 3521,
+      "from": {
+        "id": 5974247189,
+        "is_bot": true,
+        "first_name": "GUBUS GASH",
+        "username": "GUBUSfirstbot"
+      }, "chat": {
+        "id": 428521383,
+        "first_name": "Виталий",
+        "last_name": "Дячук",
+        "type": "private"
+      },
+      "date": 1673459725,
+      "text": "Hello! Let's get started. Choose an action.",
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            { "text": "Start", "callback_data": "/start" },
+            { "text": "Help", "callback_data": "/help" }
+          ]
+        ]
+      }
     },
-    "date":1673364945,
-    "text":"S"
+    "chat_instance": "-3192057739155272032",
+    "data": "/start"
   }
 }
 
 
-const startMsg = { 
-  "message_id": 761, 
-  "from": { 
-    "id": 428521383, 
-    "is_bot": false, 
-    "first_name": "Виталий", 
-    "last_name": "Дячук", 
-    "language_code": "en" 
-  }, 
-  "chat": { 
-    "id": 428521383, 
-    "first_name": "Виталий", 
-    "last_name": "Дячук", 
-    "type": "private" 
-  }, 
-  "date": 1673360358, 
-  "text": "/start", 
+const x = {
+  "update_id": 66389017,
+  "message": {
+    "message_id": 839,
+    "from": {
+      "id": 428521383,
+      "is_bot": false,
+      "first_name": "Виталий",
+      "last_name": "Дячук",
+      "language_code": "en"
+    },
+    "chat": {
+      "id": 428521383,
+      "first_name": "Виталий",
+      "last_name": "Дячук",
+      "type": "private"
+    },
+    "date": 1673364945,
+    "text": "S"
+  }
+}
+
+
+const startMsg = {
+  "message_id": 761,
+  "from": {
+    "id": 428521383,
+    "is_bot": false,
+    "first_name": "Виталий",
+    "last_name": "Дячук",
+    "language_code": "en"
+  },
+  "chat": {
+    "id": 428521383,
+    "first_name": "Виталий",
+    "last_name": "Дячук",
+    "type": "private"
+  },
+  "date": 1673360358,
+  "text": "/start",
   "entities": [
-    { 
-      "offset": 0, 
-      "length": 6, 
-      "type": "bot_command" 
+    {
+      "offset": 0,
+      "length": 6,
+      "type": "bot_command"
     }
-  ] 
+  ]
 }
 
 

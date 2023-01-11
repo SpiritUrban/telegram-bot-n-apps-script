@@ -4,7 +4,7 @@ const log = console.log
  * Common
  */
 const apiUrl = "https://api.telegram.org/bot"  // Telegram API url
-const webUrl = 'https://script.google.com/macros/s/AKfycbzqo6dYrA9dR40foCwnd5PtdHL869uryn7pPBQSIPdfCZIC97_9remSeJEEezWkwe_1IA/exec' // url to this Google Apps Script
+const webUrl = 'https://script.google.com/macros/s/AKfycbw-G6vSuz5S5g-57DaCW8N4ksK15-3qjw32J3MfNYEU-prY4HyswB_lvKzkjpVksEqv6A/exec' // url to this Google Apps Script
 
 /**
  * GUBUS GASH Bot
@@ -81,7 +81,6 @@ function doPost(request) {
  * Receiving of Get request
  */
 function doGet(e) {
-  // sendMessage('the get hook !')
   return ContentService.createTextOutput(JSON.stringify(e))
 }
 
@@ -90,21 +89,39 @@ function doGet(e) {
 */
 
 function webHook(contents) {
-  const sender = contents?.message?.from?.id
-  const msg = contents?.message?.text.toString().trim() // ..................................................... take msg and remove spaces
-  logBot('ID: ' + sender + ' say ' + text)
+  // logBot('WTF' + JSON.stringify(contents) ) // Important to somtimes on
+  const isMsg = !!contents.message
+  const isButton = !!contents.callback_query
+  const sender = (isMsg) ? contents?.message?.from?.id : contents?.callback_query?.from?.id 
+  const msg = (isMsg) ? contents?.message?.text.toString().trim() : contents?.callback_query?.data // ............... take msg and remove spaces
+  logBot('Log >>> ID: ' + sender + ' say ' + msg)
   const isCommand = msg.charAt(0) == '/'
-  if (!isCommand) return sendMessage(sender, "I do not understand this command! Do you wont get help?.") // .... if mo command
-  const command = msg.substring(1, msg.length) // .............................................................. example: '/start'
-  commands[command]() // ....................................................................................... start the command
+  if (!isCommand) return sendMessage(sender, "I understand only commands yet!", keyboard.basic) // ................... if mo command
+  const command = msg.substring(1, msg.length) // .................................................................... example: '/start'
+  if (commands[command]) commands[command](sender) // ................................................................ start the command
+  else return sendMessage(sender, "I do not understand this command! Do you wont get help?.", keyboard.basic)
 }
+
+/**
+*  ------------------------------------------- Messages ------------------------------------------- 
+*/
+// https://core.telegram.org/bots/api
+const helpMsg = `
+  <b>A lot of help:</b>
+  <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
+  <hr>
+  <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
+  <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
+  <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
+`
 
 /**
 *  ------------------------------------------- Commands ------------------------------------------- 
 */
 
 const commands = {
-  start: () => sendMessage(sender, "Hello! Let's get started. Choose an action.", keyboard.example)
+  start: (to) => sendMessage(to, "Hello! Let's get started. Choose an action.", keyboard.basic),
+  help: (to) => sendMessage(to, helpMsg, keyboard.chats),
 }
 
 /**
@@ -114,21 +131,25 @@ const keyboard = {
   /**
   * Example
   */
-  example: {
+  basic: {
     inline_keyboard: [
       [{
-        text: 'Super button!!!',
-        callback_data: 'button-1'
-      }, {
         text: 'Start',
         callback_data: '/start'
-      }],
-      [{
-        text: 'Go to chat 2',
-        switch_inline_query: 'chat-2'
       }, {
-        text: 'Go to chat 3',
-        switch_inline_query: 'chat-2'
+        text: 'Help',
+        callback_data: '/help'
+      }],
+    ]
+  },
+  chats: {
+    inline_keyboard: [
+      [{
+        text: 'Dev',
+        switch_inline_query: 'DevChat'
+      }, {
+        text: 'Heap',
+        switch_inline_query: 'HeapDraft'
       }]
     ]
   }
