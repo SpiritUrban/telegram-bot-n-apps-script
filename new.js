@@ -128,7 +128,7 @@ const commands = {
 */
 const keyboard = {
   /**
-  * Example
+  * Basic
   */
   basic: {
     inline_keyboard: [
@@ -141,6 +141,9 @@ const keyboard = {
       }],
     ]
   },
+  /**
+  * Chats
+  */
   chats: {
     inline_keyboard: [
       [{
