@@ -1,16 +1,43 @@
 const log = console.log
 
-const webUrl = 'https://script.google.com/macros/s/AKfycbwiieCo_Otp3hIfL-kRBrIeLTnwOq2Bf84YtvSp4vSelbUGyj03Z3Y588RUduhikOfU5Q/exec' // url to this Google Apps Script
-// const webUrl ='https://script.google.com/macros/s/AKfycbzbZ0KIUzEfFZANXfwh2ivr5VeiWHnw3Vns3JsoIhpJ/dev'
+/**
+ * Common
+ */
+const apiUrl = "https://api.telegram.org/bot"  // Telegram API url
+const webUrl = 'https://script.google.com/macros/s/AKfycbzqo6dYrA9dR40foCwnd5PtdHL869uryn7pPBQSIPdfCZIC97_9remSeJEEezWkwe_1IA/exec' // url to this Google Apps Script
+
+/**
+ * GUBUS GASH Bot
+ */
 const token = '5974247189:AAF5e4ArjN99brcD7bkZ8_a-MQsd8TszRJU'
 const chat = '-836748512'
-const me = '428521383'
-const botAdmin = 428521383
-const botAdmin2 = 382627421
 const sheet = "1bYc4jHUYz0qQGal05ugFmIUO2xiD1JpbYZ24ru2bSFo"              // Google Sheet id 
-const userNameBot = "......FeedBackBot"                                   // username вашего бота
-const apiUrl = "https://api.telegram.org/bot"                             // Telegram API url
 
+/**
+ * QuuuuuuuuuuuuuBot - Q Bot
+ */
+// const token = '5908656306:AAGGTAJXnPqmBsxO6SrlZhYnq4LBgSTQewM'
+
+
+/**
+ * Persones
+ */
+const admin = 428521383
+const admin2 = 382627421
+
+/**
+*  ------------------------------------------- Tools ------------------------------------------- 
+*/
+
+/**
+ * resetBot - Very important! If the bot hangs!
+ */
+function resetBot() {
+  let response = UrlFetchApp.fetch(apiUrl + token + "/setWebHook?remove");
+  console.log(response.getContentText());
+  let response2 = UrlFetchApp.fetch(apiUrl + token + "/getUpdates?offset=-1");
+  console.log(response2.getContentText());
+}
 
 function testMessage() {
   let response = UrlFetchApp.fetch(apiUrl + token + "/sendMessage&text=test");
@@ -32,49 +59,56 @@ function setWebHook() {
   console.log(response.getContentText());
 }
 
+/**
+*  ------------------------------------------- Router ------------------------------------------- 
+*/
 
 /**
  * Receiving of Post request
  */
 function doPost(request) {
   try {
-    // sendMessage(me, 'BEGIN2 ' + JSON.stringify(request), keyboard.example)
     const contents = JSON.parse(request.postData.contents);
-    // sendMessage(me, '2')
     webHook(contents);
-    // sendMessage(me, '3')
-    return ContentService.createTextOutput(JSON.stringify(request))
   } catch (err) {
-    sendMessage(me, 'ERR in doPost() ' + JSON.stringify(err), keyboard.example)
+    sendMessage(admin, 'ERR in doPost() ' + JSON.stringify(err), keyboard.example)
+  } finally {
+    return HtmlService.createHtmlOutput();
   }
 }
 
 /**
  * Receiving of Get request
  */
-const doGet = (e) => {
+function doGet(e) {
   // sendMessage('the get hook !')
   return ContentService.createTextOutput(JSON.stringify(e))
 }
 
-// ------------------------------------------------------------------------------------------------------
+/**
+*  ------------------------------------------- webHook ------------------------------------------- 
+*/
 
-
-const webHook = (contents) => {
+function webHook(contents) {
   const sender = contents?.message?.from?.id
-  const text = contents?.message?.text
-  sendMessage(sender, 'WTF ' + sender, keyboard.example)
-
-  sendMessage(sender, 'test <b>some</b>  xxx',)
-
-
-  if (text == '/start') sendMessage(sender, "Hello! Let's get started. Choose an action.", keyboard.example)
-  else sendMessage(sender, "I do not understand this command! Do you wont get help?.")
+  const msg = contents?.message?.text.toString().trim() // ..................................................... take msg and remove spaces
+  logBot('ID: ' + sender + ' say ' + text)
+  const isCommand = msg.charAt(0) == '/'
+  if (!isCommand) return sendMessage(sender, "I do not understand this command! Do you wont get help?.") // .... if mo command
+  const command = msg.substring(1, msg.length) // .............................................................. example: '/start'
+  commands[command]() // ....................................................................................... start the command
 }
 
+/**
+*  ------------------------------------------- Commands ------------------------------------------- 
+*/
+
+const commands = {
+  start: () => sendMessage(sender, "Hello! Let's get started. Choose an action.", keyboard.example)
+}
 
 /**
-* Keyboards
+*  ------------------------------------------- Keyboards ------------------------------------------- 
 */
 const keyboard = {
   /**
@@ -99,6 +133,10 @@ const keyboard = {
     ]
   }
 }
+
+/**
+*  ------------------------------------------- Lib ------------------------------------------- 
+*/
 
 /**
 * Send message
@@ -140,6 +178,11 @@ function sendMessageCopy(to_id, from_id, message_id) {
 function query(data) {
   return JSON.parse(UrlFetchApp.fetch(apiUrl + token + "/", data).getContentText());
 }
+
+function logBot(msg) {
+  sendMessage(admin, msg)
+}
+
 
 
 
