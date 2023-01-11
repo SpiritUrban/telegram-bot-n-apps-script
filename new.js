@@ -4,7 +4,7 @@ const log = console.log
  * Common
  */
 const apiUrl = "https://api.telegram.org/bot"  // Telegram API url
-const webUrl = 'https://script.google.com/macros/s/AKfycbw-G6vSuz5S5g-57DaCW8N4ksK15-3qjw32J3MfNYEU-prY4HyswB_lvKzkjpVksEqv6A/exec' // url to this Google Apps Script
+const webUrl = 'https://script.google.com/macros/s/AKfycbzQ_XfYxriLymQUYMCqSWFqVtIYIK8BmKFzf3oNYSUOi8poxJeR5WDHIDze8WV_NMNh8Q/exec' // url to this Google Apps Script
 
 /**
  * GUBUS GASH Bot
@@ -109,10 +109,9 @@ function webHook(contents) {
 const helpMsg = `
   <b>A lot of help:</b>
   <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
-  <hr>
-  <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
-  <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
-  <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
+  <a href="https://dou.ua/forums/topic/30653/">DOU about Telegram and Google Apps Script</a>
+  <a href="https://core.telegram.org/bots">About Telegram with pictures</a>
+  <a href="https://telegram-bot-sdk.readme.io/reference/removewebhook">Perfect examples and Telegram documentation</a>
 `
 
 /**
