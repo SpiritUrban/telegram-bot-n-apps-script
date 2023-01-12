@@ -105,7 +105,6 @@ function webHook(contents) {
 /**
 *  ------------------------------------------- Messages ------------------------------------------- 
 */
-// https://core.telegram.org/bots/api
 const helpMsg = `
   <b>A lot of help:</b>
   <a href="https://core.telegram.org/bots/api">The main/oficial Telegram API</a>
