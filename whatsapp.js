@@ -2,7 +2,7 @@
 // DEV
 //
 const server = 'my-pc'
-const log  = (server == 'my-pc') ? console.log : (msg) => sendMessage(me, msg);
+const log = (server == 'my-pc') ? console.log : (msg) => sendMessage(me, msg);
 
 import express from 'express';
 import axios, { isCancel, AxiosError } from 'axios';
@@ -17,17 +17,42 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '11111111mb' }));
 app.use(bodyParser.json({ limit: '11111111mb' }));
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('qwerty')
 })
 
 app.post('/api/web-hook', (req, res) => {
 
-console.log('HOOK', req.body)
-    res.send('Hello World!')
+    console.log('HOOK', req.body)
+
+    const entry = req.body.entry;
+    entry.forEach(msg => {
+        log('----the one message', msg)
+        msg.changes.forEach( change => {
+            log('----the one change', change)
+            change.value.messages.forEach( msg => {
+                log('----the one message', msg)
+                const {from, id, timestamp, text, type} = msg;
+                const theMessage =text.body;
+                log( 'theMessage--->', theMessage)
+
+                // from: '380967465486',
+                // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
+                // timestamp: '1673686367',
+                // text: { body: 'lol!!!!' },
+                // type: 'text'
+
+                
+            })
+        })
+    })
+    res.send('qwerty')
 })
 
 app.get('*', (req, res) => {
-    res.send('Hello World!')
+    console.log('ANY', req.query, req.query['hub.challenge'])
+
+
+    res.send(req.query['hub.challenge'])
 })
 
 app.listen(port, () => {
