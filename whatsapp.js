@@ -13,6 +13,7 @@ const server = 'my-pc'
 const log = (server == 'my-pc') ? console.log : (msg) => sendMessage(me, [...args].concat());
 
 import express from 'express';
+import qs from 'qs';
 import axios, { isCancel, AxiosError } from 'axios';
 const app = express()
 const port = 3005
@@ -36,13 +37,16 @@ app.post('/api/web-hook', (req, res) => {
     const entry = req.body.entry;
     entry.forEach(msg => {
         log('----the one message', msg)
-        msg.changes.forEach( change => {
+        msg.changes.forEach(change => {
             log('----the one change', change)
-            change.value.messages.forEach( msg => {
+            if (!change.value.messages) return log('Reject!!! This is no message!!!')
+            change.value.messages.forEach(msg => {
                 log('----the one message', msg)
-                const {from, id, timestamp, text, type} = msg;
-                const theMessage =text.body;
-                log( 'theMessage--->', theMessage)
+                const { from, id, timestamp, text, type } = msg;
+                const theMessage = text.body;
+                log('theMessage--->', theMessage)
+
+                sendMessage(from, theMessage, keyboard)
 
                 // from: '380967465486',
                 // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
@@ -50,7 +54,7 @@ app.post('/api/web-hook', (req, res) => {
                 // text: { body: 'lol!!!!' },
                 // type: 'text'
 
-                
+
             })
         })
     })
@@ -160,19 +164,44 @@ const keyboard = {
 /**
 * Send message
 */
-function sendMessage(chat_id, text, keyboard) {
+async function sendMessage(phone, text, keyboard) {
+    // let dataExamole = {
+    //     method: "post",
+    //     payload: {
+    //         method: "sendMessage",
+    //         chat_id: String(chat_id),
+    //         text: text,
+    //         parse_mode: "HTML",
+    //         reply_markup: JSON.stringify(keyboard),
+    //         // disable_web_page_preview: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm81XoZa9dFFAFPY-LjxgJ-XAj-KeySicSvw&usqp=CAU'
+    //     }
+    // }
     let data = {
-        method: "post",
-        payload: {
-            method: "sendMessage",
-            chat_id: String(chat_id),
-            text: text,
-            parse_mode: "HTML",
-            reply_markup: JSON.stringify(keyboard),
-            // disable_web_page_preview: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm81XoZa9dFFAFPY-LjxgJ-XAj-KeySicSvw&usqp=CAU'
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": "380967465486",
+        "type": "text",
+        "text": {
+            "preview_url": false,
+            "body": "Echo:" + text
         }
-    }
-    return query(data);
+    };
+    const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
+    const options = {
+        method: 'POST',
+        headers: { 
+            'content-type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer ' + token
+         },
+        data: qs.stringify(data),
+        url,
+    };
+    const response = axios(options);
+
+    // const response = axios.post('https://graph.facebook.com/v15.0/113203361661968/messages', data);
+    log(response.data);
+
+    // return query(data);
 }
 
 /**
