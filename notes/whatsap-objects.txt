@@ -11,6 +11,8 @@ msg
         }
 }
 
+https://developers.facebook.com/docs/whatsapp/cloud-api/guides/send-messages
+
 menu list
 {
   "messaging_product": "whatsapp",
