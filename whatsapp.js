@@ -10,7 +10,7 @@
 // DEV
 //
 const server = 'my-pc'
-const log = (server == 'my-pc') ? console.log : (msg) => sendMessage(me, msg);
+const log = (server == 'my-pc') ? console.log : (msg) => sendMessage(me, [...args].concat());
 
 import express from 'express';
 import axios, { isCancel, AxiosError } from 'axios';
@@ -25,12 +25,13 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '11111111mb' }));
 app.use(bodyParser.json({ limit: '11111111mb' }));
 
 app.get('/', (req, res) => {
-    res.send('qwerty')
+    res.send('The API of WhatsApp Bot')
 })
+
 
 app.post('/api/web-hook', (req, res) => {
 
-    console.log('HOOK', req.body)
+    log('HOOK', req.body)
 
     const entry = req.body.entry;
     entry.forEach(msg => {
@@ -86,43 +87,8 @@ const apiUrl = "https://api.telegram.org/bot"                             // Tel
 /**
  * QuuuuuuuuuuuuuBot - Q Bot
  */
-const token = '5908656306:AAGGTAJXnPqmBsxO6SrlZhYnq4LBgSTQewM'
-
-
-/**
- * resetBot - Very important! If the bot hangs!
- */
-function resetBot() {
-    let response = UrlFetchApp.fetch(apiUrl + token + "/setWebHook?remove");
-    console.log(response.getContentText());
-    let response2 = UrlFetchApp.fetch(apiUrl + token + "/getUpdates?offset=-1");
-    console.log(response2.getContentText());
-}
-
-function testMessage() {
-    let response = UrlFetchApp.fetch(apiUrl + token + "/sendMessage&text=test");
-    console.log(response.getContentText());
-}
-
-function getMe() {
-    let response = UrlFetchApp.fetch(apiUrl + token + "/getMe");
-    console.log(response.getContentText());
-}
-
-function getWebHookInfo() {
-    let response = UrlFetchApp.fetch(apiUrl + token + "/getWebHookInfo");
-    console.log(response.getContentText());
-}
-
-async function setWebHook() {
-    // let response = UrlFetchApp.fetch(apiUrl + token + "/setWebHook?url=" + webUrl);
-
-    const answer = await axios.get(apiUrl + token + "/setWebHook?url=" + webUrl);
-    console.log(answer);
-
-    // console.log(response.getContentText());
-}
-setWebHook()
+// const token = '5908656306:AAGGTAJXnPqmBsxO6SrlZhYnq4LBgSTQewM'
+const token = 'EAAMVeXYpmN4BAA0e8BZACCUxZC1eo4S0OGF0kT4D4ZC3wf01ZCVxsOPLP4DAnaREOFYyn6E0fy7y2LNIG2tIAzZC5MFYcaEA1hhB032ovgRzBdWUH6mZArvuIN6umj6JrAYXcgrNEqZAQuK4IaXEFUF4zotH5DTbxTgekfkM1u2IdyYnZAtz5FLFqPGHZCMY3WgOjdQrbI6qCtwZDZD'
 
 
 
@@ -156,15 +122,9 @@ function doGet(e) {
 function webHook(contents) {
     const sender = contents?.message?.from?.id
     const text = contents?.message?.text
-
     sendMessage(sender, 'WTF>>> ' + sender + 'say' + text)
-
     sendMessage(sender, 'WTF3>>> ' + JSON.stringify(contents))
-
-
     // sendMessage(sender, 'test <b>some</b>  xxx',)
-
-
     // if (text == '/start') sendMessage(sender, "Hello! Let's get started. Choose an action.", keyboard.example)
     // else sendMessage(sender, "I do not understand this command! Do you wont get help?.")
 }

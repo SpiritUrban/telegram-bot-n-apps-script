@@ -83,10 +83,8 @@ function getWebHookInfo() {
 
 async function setWebHook() {
     // let response = UrlFetchApp.fetch(apiUrl + token + "/setWebHook?url=" + webUrl);
-
     const answer = await axios.get(apiUrl + token + "/setWebHook?url=" + webUrl);
     console.log(answer);
-
     // console.log(response.getContentText());
 }
 setWebHook()
@@ -123,15 +121,9 @@ function doGet(e) {
 function webHook(contents) {
     const sender = contents?.message?.from?.id
     const text = contents?.message?.text
-
     sendMessage(sender, 'WTF>>> ' + sender + 'say' + text)
-
     sendMessage(sender, 'WTF3>>> ' + JSON.stringify(contents))
-
-
     // sendMessage(sender, 'test <b>some</b>  xxx',)
-
-
     // if (text == '/start') sendMessage(sender, "Hello! Let's get started. Choose an action.", keyboard.example)
     // else sendMessage(sender, "I do not understand this command! Do you wont get help?.")
 }
