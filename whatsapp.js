@@ -33,35 +33,45 @@ app.get('/', (req, res) => {
 
 
 app.post('/api/web-hook', (req, res) => {
-
-    log('HOOK', req.body)
-
-    const entry = req.body.entry;
-    entry.forEach(msg => {
-        log('----the one message', msg)
-        msg.changes.forEach(change => {
-            log('----the one change', change)
-            if (!change.value.messages) return log('Reject!!! This is no message!!!')
-            change.value.messages.forEach(msg => {
-                log('----the one message', msg)
-                const { from, id, timestamp, text, type } = msg;
-                const theMessage = text.body;
-                log('theMessage--->', theMessage)
-
-                // sendMessage(from, theMessage, keyboard)
-                sendMessageButtons(from, theMessage, keyboard.basic)
-
-                // from: '380967465486',
-                // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
-                // timestamp: '1673686367',
-                // text: { body: 'lol!!!!' },
-                // type: 'text'
+    try {
 
 
+        log('HOOK', req.body)
+
+        const entry = req.body.entry;
+        entry.forEach(msg => {
+            log('----the one message', msg)
+            msg.changes.forEach(change => {
+                log('----the one change', change)
+                if (!change.value.messages) return log('Reject!!! This is no message!!!')
+                change.value.messages.forEach(msg => {
+                    log('----the one message', msg)
+                    const { from, id, timestamp, text, type } = msg;
+                    const theMessage = text.body;
+                    log('theMessage--->', theMessage)
+
+                    // sendMessage(from, theMessage, keyboard)
+                    if (theMessage == '1') sendMessage(from, theMessage)
+                    else if (theMessage == '2') sendMessage(from, theMessage, keyboard.basic)
+                    else sendMessage(from, theMessage, keyboard.second)
+
+                    // from: '380967465486',
+                    // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
+                    // timestamp: '1673686367',
+                    // text: { body: 'lol!!!!' },
+                    // type: 'text'
+
+
+                })
             })
         })
-    })
-    res.send('qwerty')
+        res.send('qwerty')
+
+    } catch (error) {
+         sendMessage(from, error )
+
+    }
+
 })
 
 app.get('*', (req, res) => {
@@ -159,16 +169,9 @@ const keyboard = {
         }
     ],
     /**
-    * Chats
+    * Some
     */
-    chats: [
-        {
-            "type": "reply",
-            "reply": {
-                "id": "UNIQUE_BUTTON_ID_1",
-                "title": "BUTTON_TITLE_1"
-            }
-        },
+    second: [
         {
             "type": "reply",
             "reply": {
