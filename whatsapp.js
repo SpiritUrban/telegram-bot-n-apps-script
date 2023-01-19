@@ -51,9 +51,10 @@ app.post('/api/web-hook', (req, res) => {
                     log('theMessage--->', theMessage)
 
                     // sendMessage(from, theMessage, keyboard)
-                    if (theMessage == '1') sendMessage(from, theMessage)
-                    else if (theMessage == '2') sendMessage(from, theMessage, keyboard.basic)
-                    else sendMessage(from, theMessage, keyboard.second)
+                    if (theMessage == '1') sendMessage(from, theMessage, keyboard.basic)
+                    else if (theMessage == '2')  sendMessage(from, theMessage, keyboard.second)
+                    else if (theMessage == '3')  sendMessageButtonsList(from, theMessage)
+                    else sendMessage(from, theMessage)
 
                     // from: '380967465486',
                     // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
@@ -68,7 +69,7 @@ app.post('/api/web-hook', (req, res) => {
         res.send('qwerty')
 
     } catch (error) {
-         sendMessage(from, error )
+        sendMessage(from, error)
 
     }
 
@@ -208,19 +209,20 @@ async function sendMessageOnly(phone, text) {
             "body": "Echo:" + text
         }
     };
-    const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
-    const options = {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Bearer ' + token
-        },
-        data: qs.stringify(data),
-        url,
-    };
-    const response = axios(options);
-    log(response.data);
-    return response
+    // const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
+    // const options = {
+    //     method: 'POST',
+    //     headers: {
+    //         'content-type': 'application/x-www-form-urlencoded',
+    //         'Authorization': 'Bearer ' + token
+    //     },
+    //     data: qs.stringify(data),
+    //     url,
+    // };
+    // const response = axios(options);
+
+    return queryNode(data);
+  
     // return query(data);
 }
 
@@ -260,7 +262,81 @@ async function sendMessageButtons(phone, text, keyboard) {
     // return query(data);
 }
 
+/**
+* Send message
+*/
+async function sendMessageButtonsList(phone, text, keyboard) {
 
+    const data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": "380967465486",
+        "type": "interactive",
+        "interactive": {
+            "type": "list",
+            "header": {
+                "type": "text",
+                "text": "HEADER_TEXT"
+            },
+            "body": {
+                "text": "BODY_TEXT"
+            },
+            "footer": {
+                "text": "FOOTER_TEXT"
+            },
+            "action": {
+                "button": "BUTTON_TEXT",
+                "sections": [
+                    {
+                        "title": "SECTION_1_TITLE",
+                        "rows": [
+                            {
+                                "id": "SECTION_1_ROW_1_ID",
+                                "title": "SECTION_1_ROW_1_TITLE",
+                                "description": "SECTION_1_ROW_1_DESCRIPTION"
+                            },
+                            {
+                                "id": "SECTION_1_ROW_2_ID",
+                                "title": "SECTION_1_ROW_2_TITLE",
+                                "description": "SECTION_1_ROW_2_DESCRIPTION"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "SECTION_2_TITLE",
+                        "rows": [
+                            {
+                                "id": "SECTION_2_ROW_1_ID",
+                                "title": "SECTION_2_ROW_1_TITLE",
+                                "description": "SECTION_2_ROW_1_DESCRIPTION"
+                            },
+                            {
+                                "id": "SECTION_2_ROW_2_ID",
+                                "title": "SECTION_2_ROW_2_TITLE",
+                                "description": "SECTION_2_ROW_2_DESCRIPTION"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+    const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
+    const options = {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer ' + token
+        },
+        data: qs.stringify(data),
+        url,
+    };
+    const response = axios(options);
+    log(response.data);
+    return response
+    // return query(data);
+}
 
 /**
  * Send COPY of message
@@ -284,6 +360,21 @@ function sendMessageCopy(to_id, from_id, message_id) {
 function query(data) {
     return JSON.parse(UrlFetchApp.fetch(apiUrl + token + "/", data).getContentText());
 }
+
+function queryNode(data) {
+    const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
+    const options = {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer ' + token
+        },
+        data: qs.stringify(data),
+        url,
+    };
+    return axios(options);
+}
+
 
 
 
