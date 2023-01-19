@@ -93,7 +93,7 @@ const apiUrl = "https://api.telegram.org/bot"                             // Tel
  * QuuuuuuuuuuuuuBot - Q Bot
  */
 // const token = '5908656306:AAGGTAJXnPqmBsxO6SrlZhYnq4LBgSTQewM'
-const token = 'EAAMVeXYpmN4BAA0e8BZACCUxZC1eo4S0OGF0kT4D4ZC3wf01ZCVxsOPLP4DAnaREOFYyn6E0fy7y2LNIG2tIAzZC5MFYcaEA1hhB032ovgRzBdWUH6mZArvuIN6umj6JrAYXcgrNEqZAQuK4IaXEFUF4zotH5DTbxTgekfkM1u2IdyYnZAtz5FLFqPGHZCMY3WgOjdQrbI6qCtwZDZD'
+const token = 'EAAMVeXYpmN4BAMZBZBdyoAkkOxlYQHnKHQjjNAXlojqSp7sZCMuUc4lc9y3UYdkhyUBdJmxoMBYp1SUj97pgjQK3bQ1fZAZA1J4TRYlrLxY67vyHPhJdJkhUpXE8orV4VUXJtTKuKSO0rZCiMQp6t7ALv1j27sWLoZCNeklz2k27D9MGHiluqLa5iyIt9GqMbgLTiaL5ImRdQZDZD'
 
 
 
@@ -204,6 +204,37 @@ async function sendMessage(phone, text, keyboard) {
 
     // return query(data);
 }
+
+const btns = {
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": "380967465486",
+    "type": "interactive",
+    "interactive": {
+      "type": "button",
+      "body": {
+        "text": "BUTTON_TEXT"
+      },
+      "action": {
+        "buttons": [
+          {
+            "type": "reply",
+            "reply": {
+              "id": "UNIQUE_BUTTON_ID_1",
+              "title": "BUTTON_TITLE_1"
+            }
+          },
+          {
+            "type": "reply",
+            "reply": {
+              "id": "UNIQUE_BUTTON_ID_2",
+              "title": "BUTTON_TITLE_2"
+            }
+          }
+        ]
+      }
+    }
+  }
 
 /**
  * Send COPY of message
