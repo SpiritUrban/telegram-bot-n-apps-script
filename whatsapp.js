@@ -184,18 +184,11 @@ const keyboard = {
 * Send message
 */
 async function sendMessage(phone, text, keyboard) {
-
     const response = keyboard ? await sendMessageButtons(phone, text, keyboard) : sendMessageOnly(phone, text)
-    // if (keyboard) await sendMessageButtons(phone, text, keyboard)
-    // else await sendMessageOnly(phone, text)
-
-    // const response = axios.post('https://graph.facebook.com/v15.0/113203361661968/messages', data);
     log(response.data);
     return response
-
     // return query(data);
 }
-
 
 
 /**
@@ -223,11 +216,8 @@ async function sendMessageOnly(phone, text) {
         url,
     };
     const response = axios(options);
-
-    // const response = axios.post('https://graph.facebook.com/v15.0/113203361661968/messages', data);
     log(response.data);
     return response
-
     // return query(data);
 }
 
@@ -235,17 +225,6 @@ async function sendMessageOnly(phone, text) {
 * Send message
 */
 async function sendMessageButtons(phone, text, keyboard) {
-    // let data = {
-    //     "messaging_product": "whatsapp",
-    //     "recipient_type": "individual",
-    //     "to": "380967465486",
-    //     "type": "text",
-    //     "text": {
-    //         "preview_url": false,
-    //         "body": "Echo:" + text
-    //     }
-    // };
-
     const data = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
@@ -273,11 +252,8 @@ async function sendMessageButtons(phone, text, keyboard) {
         url,
     };
     const response = axios(options);
-
-    // const response = axios.post('https://graph.facebook.com/v15.0/113203361661968/messages', data);
     log(response.data);
     return response
-
     // return query(data);
 }
 
