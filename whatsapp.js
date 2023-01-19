@@ -2,6 +2,7 @@
 Що потрібно розуміти:
     * Токен (у режимі розробки) протухає за добу
     * Хук прописується в адмінці фейсбуку (https://developers.facebook.com/apps/)
+    * Щоб підтвердити хук - потрібно хитро відповісти (res.send(req.query['hub.challenge']))
     * Не можливо відправити довільне повідомлення першим. Лише після відповіді юзера. Відправляєм шаблонне (формується в адмінці)
     * Пермішенси відразу в адмінці потрібно мабуть відкрити (клацнути всі)
 */
@@ -47,7 +48,8 @@ app.post('/api/web-hook', (req, res) => {
                 const theMessage = text.body;
                 log('theMessage--->', theMessage)
 
-                sendMessage(from, theMessage, keyboard)
+                // sendMessage(from, theMessage, keyboard)
+                sendMessageButtons(from, theMessage, keyboard.basic)
 
                 // from: '380967465486',
                 // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
@@ -64,8 +66,6 @@ app.post('/api/web-hook', (req, res) => {
 
 app.get('*', (req, res) => {
     console.log('ANY', req.query, req.query['hub.challenge'])
-
-
     res.send(req.query['hub.challenge'])
 })
 
@@ -136,47 +136,72 @@ function webHook(contents) {
 
 
 /**
-* Keyboards
+*  ------------------------------------------- Keyboards ------------------------------------------- 
 */
 const keyboard = {
     /**
-    * Example
+    * Basic
     */
-    example: {
-        inline_keyboard: [
-            [{
-                text: 'Super button!!!',
-                callback_data: 'button-1'
-            }, {
-                text: 'Start',
-                callback_data: '/start'
-            }],
-            [{
-                text: 'Go to chat 2',
-                switch_inline_query: 'chat-2'
-            }, {
-                text: 'Go to chat 3',
-                switch_inline_query: 'chat-2'
-            }]
-        ]
-    }
+    basic: [
+        {
+            "type": "reply",
+            "reply": {
+                "id": "UNIQUE_BUTTON_ID_1",
+                "title": "b1"
+            }
+        },
+        {
+            "type": "reply",
+            "reply": {
+                "id": "UNIQUE_BUTTON_ID_2",
+                "title": "b2"
+            }
+        }
+    ],
+    /**
+    * Chats
+    */
+    chats: [
+        {
+            "type": "reply",
+            "reply": {
+                "id": "UNIQUE_BUTTON_ID_1",
+                "title": "BUTTON_TITLE_1"
+            }
+        },
+        {
+            "type": "reply",
+            "reply": {
+                "id": "UNIQUE_BUTTON_ID_2",
+                "title": "BUTTON_TITLE_2"
+            }
+        }
+    ]
 }
+
 
 /**
 * Send message
 */
 async function sendMessage(phone, text, keyboard) {
-    // let dataExamole = {
-    //     method: "post",
-    //     payload: {
-    //         method: "sendMessage",
-    //         chat_id: String(chat_id),
-    //         text: text,
-    //         parse_mode: "HTML",
-    //         reply_markup: JSON.stringify(keyboard),
-    //         // disable_web_page_preview: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm81XoZa9dFFAFPY-LjxgJ-XAj-KeySicSvw&usqp=CAU'
-    //     }
-    // }
+
+    const response = keyboard ? await sendMessageButtons(phone, text, keyboard) : sendMessageOnly(phone, text)
+    // if (keyboard) await sendMessageButtons(phone, text, keyboard)
+    // else await sendMessageOnly(phone, text)
+
+    // const response = axios.post('https://graph.facebook.com/v15.0/113203361661968/messages', data);
+    log(response.data);
+    return response
+
+    // return query(data);
+}
+
+
+
+/**
+* Send message
+*/
+async function sendMessageOnly(phone, text) {
     let data = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
@@ -190,10 +215,10 @@ async function sendMessage(phone, text, keyboard) {
     const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
     const options = {
         method: 'POST',
-        headers: { 
+        headers: {
             'content-type': 'application/x-www-form-urlencoded',
             'Authorization': 'Bearer ' + token
-         },
+        },
         data: qs.stringify(data),
         url,
     };
@@ -201,40 +226,62 @@ async function sendMessage(phone, text, keyboard) {
 
     // const response = axios.post('https://graph.facebook.com/v15.0/113203361661968/messages', data);
     log(response.data);
+    return response
 
     // return query(data);
 }
 
-const btns = {
-    "messaging_product": "whatsapp",
-    "recipient_type": "individual",
-    "to": "380967465486",
-    "type": "interactive",
-    "interactive": {
-      "type": "button",
-      "body": {
-        "text": "BUTTON_TEXT"
-      },
-      "action": {
-        "buttons": [
-          {
-            "type": "reply",
-            "reply": {
-              "id": "UNIQUE_BUTTON_ID_1",
-              "title": "BUTTON_TITLE_1"
+/**
+* Send message
+*/
+async function sendMessageButtons(phone, text, keyboard) {
+    // let data = {
+    //     "messaging_product": "whatsapp",
+    //     "recipient_type": "individual",
+    //     "to": "380967465486",
+    //     "type": "text",
+    //     "text": {
+    //         "preview_url": false,
+    //         "body": "Echo:" + text
+    //     }
+    // };
+
+    const data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": "380967465486",
+        "type": "interactive",
+        "interactive": {
+            "type": "button",
+            "body": {
+                "text": "Echo:" + text
+            },
+            "action": {
+                "buttons": keyboard
             }
-          },
-          {
-            "type": "reply",
-            "reply": {
-              "id": "UNIQUE_BUTTON_ID_2",
-              "title": "BUTTON_TITLE_2"
-            }
-          }
-        ]
-      }
-    }
-  }
+        }
+    };
+
+    const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
+    const options = {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer ' + token
+        },
+        data: qs.stringify(data),
+        url,
+    };
+    const response = axios(options);
+
+    // const response = axios.post('https://graph.facebook.com/v15.0/113203361661968/messages', data);
+    log(response.data);
+    return response
+
+    // return query(data);
+}
+
+
 
 /**
  * Send COPY of message
