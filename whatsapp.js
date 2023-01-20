@@ -31,48 +31,71 @@ app.get('/', (req, res) => {
     res.send('The API of WhatsApp Bot')
 })
 
+const admin = '380967465486'
 
-app.post('/api/web-hook', (req, res) => {
-    try {
+function messageReaction(msg) {
+    const { from, id, timestamp, text, type } = msg;
+    const theMessage = text?.body;
+    log('4)----theMessage--->', theMessage);
 
+    // sendMessage(from, theMessage, keyboard)
+    if (theMessage == '1') sendMessage(from, theMessage, keyboard.basic)
+    else if (theMessage == '2') sendMessage(from, theMessage, keyboard.second)
+    else if (theMessage == '3') sendMessageButtonsList(from, theMessage)
+    else sendMessage(from, theMessage);
 
-        log('HOOK', req.body)
+    // from: '380967465486',
+    // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
+    // timestamp: '1673686367',
+    // text: { body: 'lol!!!!' },
+    // type: 'text'
+}
 
-        const entry = req.body.entry;
-        entry.forEach(msg => {
-            log('----the one message', msg)
-            msg.changes.forEach(change => {
-                log('----the one change', change)
-                if (!change.value.messages) return log('Reject!!! This is no message!!!')
-                change.value.messages.forEach(msg => {
-                    log('----the one message', msg)
-                    const { from, id, timestamp, text, type } = msg;
-                    const theMessage = text.body;
-                    log('theMessage--->', theMessage)
+function interactiveReaction(msg) {
+    const { from, id, timestamp, type, interactive } = msg;
+    // { type: 'button_reply', button_reply: { id: 'b2', title: 'Bbb 2' } }
 
-                    // sendMessage(from, theMessage, keyboard)
-                    if (theMessage == '1') sendMessage(from, theMessage, keyboard.basic)
-                    else if (theMessage == '2')  sendMessage(from, theMessage, keyboard.second)
-                    else if (theMessage == '3')  sendMessageButtonsList(from, theMessage)
-                    else sendMessage(from, theMessage)
-
-                    // from: '380967465486',
-                    // id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDE0MzRDMzk4Q0Q4RkNBNzcA',
-                    // timestamp: '1673686367',
-                    // text: { body: 'lol!!!!' },
-                    // type: 'text'
-
-
-                })
-            })
-        })
-        res.send('qwerty')
-
-    } catch (error) {
-        sendMessage(from, error)
+    if (interactive.type == 'button_reply') {
+        const { id, title } = interactive.button_reply;
+        log('|');
+        log(`[${title}]`);
+        log('|');
 
     }
 
+
+}
+
+app.post('/api/web-hook', (req, res) => {
+    try {
+        log('\n HOOK', req.body);
+
+        const entry = req.body.entry;
+        entry.forEach((oneEntry, i) => {
+            log('1)----the oneEntry--' + i, oneEntry);
+            oneEntry.changes.forEach((change, ii) => {
+                log('2)----the one change--' + ii, change);
+
+                // log('----the one change STATUSES', change.value.statuses);
+
+                // if (!change.value.messages) return log('Reject!!! This is no message!!!')
+
+                //msg
+                if (change.value.messages) {
+                    change.value.messages.forEach((msg, iii) => {
+                        log('3)----the one message--' + iii, msg);
+                        if (msg?.text) messageReaction(msg)
+                        if (msg?.interactive) interactiveReaction(msg)
+                    })
+                } else log('Something else !!!');
+
+            })
+        })
+        res.send('qwerty');
+
+    } catch (error) {
+        sendMessage(admin, error)
+    }
 })
 
 app.get('*', (req, res) => {
@@ -104,7 +127,7 @@ const apiUrl = "https://api.telegram.org/bot"                             // Tel
  * QuuuuuuuuuuuuuBot - Q Bot
  */
 // const token = '5908656306:AAGGTAJXnPqmBsxO6SrlZhYnq4LBgSTQewM'
-const token = 'EAAMVeXYpmN4BAMZBZBdyoAkkOxlYQHnKHQjjNAXlojqSp7sZCMuUc4lc9y3UYdkhyUBdJmxoMBYp1SUj97pgjQK3bQ1fZAZA1J4TRYlrLxY67vyHPhJdJkhUpXE8orV4VUXJtTKuKSO0rZCiMQp6t7ALv1j27sWLoZCNeklz2k27D9MGHiluqLa5iyIt9GqMbgLTiaL5ImRdQZDZD'
+const token = 'EAAMVeXYpmN4BAKyZCuJgZBgjWaxYqd3wfZCC4nlTgRE0zsGkHUcylgcA1einHq9twq5sBJG24YLRHo3mCTviIoumXAZBxUIME7rvnPnCU7jPh7oJIfh6JBWZCcJKHILnLKU47ANrmeORZAU5qdefSwapbex8EuZBbaghw60GVf85qabvCAYFTsSRyUT1hyJfGDioQYk9ROrBAZDZD'
 
 
 
@@ -157,15 +180,15 @@ const keyboard = {
         {
             "type": "reply",
             "reply": {
-                "id": "UNIQUE_BUTTON_ID_1",
-                "title": "b1"
+                "id": "b1",
+                "title": "Bbbb 1"
             }
         },
         {
             "type": "reply",
             "reply": {
-                "id": "UNIQUE_BUTTON_ID_2",
-                "title": "b2"
+                "id": "b2",
+                "title": "Bbb 2"
             }
         }
     ],
@@ -176,8 +199,8 @@ const keyboard = {
         {
             "type": "reply",
             "reply": {
-                "id": "UNIQUE_BUTTON_ID_2",
-                "title": "BUTTON_TITLE_2"
+                "id": "s1",
+                "title": "Ssss 1"
             }
         }
     ]
@@ -194,7 +217,6 @@ async function sendMessage(phone, text, keyboard) {
     // return query(data);
 }
 
-
 /**
 * Send message
 */
@@ -209,20 +231,7 @@ async function sendMessageOnly(phone, text) {
             "body": "Echo:" + text
         }
     };
-    // const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
-    // const options = {
-    //     method: 'POST',
-    //     headers: {
-    //         'content-type': 'application/x-www-form-urlencoded',
-    //         'Authorization': 'Bearer ' + token
-    //     },
-    //     data: qs.stringify(data),
-    //     url,
-    // };
-    // const response = axios(options);
-
     return queryNode(data);
-  
     // return query(data);
 }
 
@@ -245,20 +254,7 @@ async function sendMessageButtons(phone, text, keyboard) {
             }
         }
     };
-
-    const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
-    const options = {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Bearer ' + token
-        },
-        data: qs.stringify(data),
-        url,
-    };
-    const response = axios(options);
-    log(response.data);
-    return response
+    return queryNode(data);
     // return query(data);
 }
 
@@ -321,38 +317,10 @@ async function sendMessageButtonsList(phone, text, keyboard) {
             }
         }
     }
-
-    const url = 'https://graph.facebook.com/v15.0/113203361661968/messages';
-    const options = {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Bearer ' + token
-        },
-        data: qs.stringify(data),
-        url,
-    };
-    const response = axios(options);
-    log(response.data);
-    return response
+    return queryNode(data);
     // return query(data);
 }
 
-/**
- * Send COPY of message
- */
-function sendMessageCopy(to_id, from_id, message_id) {
-    let data = {
-        method: "post",
-        payload: {
-            method: "copyMessage",
-            chat_id: String(to_id), // кому
-            from_chat_id: String(from_id), // откуда
-            message_id: message_id // что
-        }
-    }
-    return query(data);
-}
 
 /**
  * Request to Telegram
