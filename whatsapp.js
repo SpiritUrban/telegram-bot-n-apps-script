@@ -52,13 +52,25 @@ function messageReaction(msg) {
 }
 
 function interactiveReaction(msg) {
+    const msgExample = {
+        context: {
+            from: '15550231633',
+            id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAERgSNkQxRDI0RDJBMzBDNDE2MzY4AA=='
+        },
+        from: '380967465486',
+        id: 'wamid.HBgMMzgwOTY3NDY1NDg2FQIAEhgUM0VCMDhCMTYwOTQ5NDNGRkE0MTQA',
+        timestamp: '1674837953',
+        type: 'interactive',
+        interactive: { type: 'button_reply', button_reply: { id: 'b2', title: 'Bbb 2' } }
+    }
+
     const { from, id, timestamp, type, interactive } = msg;
     // { type: 'button_reply', button_reply: { id: 'b2', title: 'Bbb 2' } }
 
     if (interactive.type == 'button_reply') {
         const { id, title } = interactive.button_reply;
         log('|');
-        log(`[${title}]`);
+        log(`|==> ${title}`);
         log('|');
 
     }
@@ -127,7 +139,7 @@ const apiUrl = "https://api.telegram.org/bot"                             // Tel
  * QuuuuuuuuuuuuuBot - Q Bot
  */
 // const token = '5908656306:AAGGTAJXnPqmBsxO6SrlZhYnq4LBgSTQewM'
-const token = 'EAAMVeXYpmN4BAKyZCuJgZBgjWaxYqd3wfZCC4nlTgRE0zsGkHUcylgcA1einHq9twq5sBJG24YLRHo3mCTviIoumXAZBxUIME7rvnPnCU7jPh7oJIfh6JBWZCcJKHILnLKU47ANrmeORZAU5qdefSwapbex8EuZBbaghw60GVf85qabvCAYFTsSRyUT1hyJfGDioQYk9ROrBAZDZD'
+const token = 'EAAMVeXYpmN4BAGOsuAhPUwag9ZAzNuQUT8CHEDYnZBIZCerZB30376VeK0pBhXFCF8VVoxkgZC3iV71aCCg0DMPDrgACyGuWOtOYqqDvMoiSRouR8rNXi0MLlj7fUpzGHUShLaVnZAFLl5qWjzOA58Un9f1PHLAQaC35b8GclzRQXw11ZC5hZADF9vCSMexYmBfLHz2iKHHw9gZDZD'
 
 
 
@@ -151,23 +163,35 @@ function doPost(request) {
  * Receiving of Get request
  */
 function doGet(e) {
-    // sendMessage('the get hook !')
     return ContentService.createTextOutput(JSON.stringify(e))
+  }
+  
+  /**
+  *  ------------------------------------------- webHook ------------------------------------------- 
+  */
+  
+  function webHook(contents) {
+    // logBot('WTF' + JSON.stringify(contents) ) // Important to somtimes on
+    const isMsg = !!contents.message
+    const isButton = !!contents.callback_query
+    const sender = (isMsg) ? contents?.message?.from?.id : contents?.callback_query?.from?.id 
+    const msg = (isMsg) ? contents?.message?.text.toString().trim() : contents?.callback_query?.data // ............... take msg and remove spaces
+    logBot('Log >>> ID: ' + sender + ' say ' + msg)
+    const isCommand = msg.charAt(0) == '/'
+    if (!isCommand) return sendMessage(sender, "I understand only commands yet!", keyboard.basic) // ................... if mo command
+    const command = msg.substring(1, msg.length) // .................................................................... example: '/start'
+    if (commands[command]) commands[command](sender) // ................................................................ start the command
+    else return sendMessage(sender, "I do not understand this command! Do you wont get help?.", keyboard.basic)
+  }
+
+/**
+*  ------------------------------------------- Commands ------------------------------------------- 
+*/
+
+const commands = {
+    start: (to) => sendMessage(to, "Hello! Let's get started. Choose an action.", keyboard.basic),
+    help: (to) => sendMessage(to, helpMsg, keyboard.chats),
 }
-
-// ------------------------------------------------------------------------------------------------------
-
-
-function webHook(contents) {
-    const sender = contents?.message?.from?.id
-    const text = contents?.message?.text
-    sendMessage(sender, 'WTF>>> ' + sender + 'say' + text)
-    sendMessage(sender, 'WTF3>>> ' + JSON.stringify(contents))
-    // sendMessage(sender, 'test <b>some</b>  xxx',)
-    // if (text == '/start') sendMessage(sender, "Hello! Let's get started. Choose an action.", keyboard.example)
-    // else sendMessage(sender, "I do not understand this command! Do you wont get help?.")
-}
-
 
 /**
 *  ------------------------------------------- Keyboards ------------------------------------------- 
@@ -180,15 +204,15 @@ const keyboard = {
         {
             "type": "reply",
             "reply": {
-                "id": "b1",
-                "title": "Bbbb 1"
+                "id": "start",
+                "title": "Start"
             }
         },
         {
             "type": "reply",
             "reply": {
-                "id": "b2",
-                "title": "Bbb 2"
+                "id": "help",
+                "title": "help"
             }
         }
     ],
