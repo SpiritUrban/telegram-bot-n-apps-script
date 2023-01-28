@@ -1,0 +1,16 @@
+MAIN Developers - https://developers.facebook.com/apps/868036347795678/whatsapp-business/wa-dev-console/?business_id=146063991429647
+
+
+WhatsApp accounts - https://business.facebook.com/wa/manage/home/?business_id=146063991429647&waba_id=103527239307752
+Insights - https://business.facebook.com/wa/manage/phone-numbers/?business_id=146063991429647&waba_id=103527239307752&phone_number=15550231633
+People - https://business.facebook.com/settings/people/100083777386505?business_id=146063991429647
+Message templates - https://business.facebook.com/wa/manage/message-templates/?business_id=146063991429647&waba_id=103527239307752
+
+Send Message Templates - https://developers.facebook.com/docs/whatsapp/cloud-api/guides/send-message-templates
+Postman API - https://web.postman.co/workspace/Personal-Workspace~bb590f62-2fd1-45bb-94a2-fbad0b897143/example/843037-eb1ecbeb-0e3a-4095-8c28-7194bf2d8669
+Messages - https://developers.facebook.com/docs/whatsapp/on-premises/reference/messages
+Messages - https://developers.facebook.com/docs/whatsapp/on-premises/reference/messages#text-object
+
+Sending Interactive Message Templates - https://developers.facebook.com/docs/whatsapp/api/messages/message-templates/interactive-message-templates#request
+Sending Interactive Messages - https://developers.facebook.com/docs/whatsapp/guides/interactive-messages
+Send Messages - https://developers.facebook.com/docs/whatsapp/cloud-api/guides/send-messages
