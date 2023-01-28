@@ -116,7 +116,6 @@ const helpMsg = `
 /**
 *  ------------------------------------------- Commands ------------------------------------------- 
 */
-
 const commands = {
   start: (to) => sendMessage(to, "Hello! Let's get started. Choose an action.", keyboard.basic),
   help: (to) => sendMessage(to, helpMsg, keyboard.chats),

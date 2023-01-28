@@ -31,6 +31,8 @@ app.get('/', (req, res) => {
     res.send('The API of WhatsApp Bot')
 })
 
+
+
 const admin = '380967465486'
 
 function messageReaction(msg) {
@@ -72,26 +74,17 @@ function interactiveReaction(msg) {
         log('|');
         log(`|==> ${title}`);
         log('|');
-
-    }
-
-
+    };
 }
 
 app.post('/api/web-hook', (req, res) => {
     try {
         log('\n HOOK', req.body);
-
         const entry = req.body.entry;
         entry.forEach((oneEntry, i) => {
             log('1)----the oneEntry--' + i, oneEntry);
             oneEntry.changes.forEach((change, ii) => {
                 log('2)----the one change--' + ii, change);
-
-                // log('----the one change STATUSES', change.value.statuses);
-
-                // if (!change.value.messages) return log('Reject!!! This is no message!!!')
-
                 //msg
                 if (change.value.messages) {
                     change.value.messages.forEach((msg, iii) => {
@@ -100,7 +93,6 @@ app.post('/api/web-hook', (req, res) => {
                         if (msg?.interactive) interactiveReaction(msg)
                     })
                 } else log('Something else !!!');
-
             })
         })
         res.send('qwerty');
@@ -139,7 +131,7 @@ const apiUrl = "https://api.telegram.org/bot"                             // Tel
  * QuuuuuuuuuuuuuBot - Q Bot
  */
 // const token = '5908656306:AAGGTAJXnPqmBsxO6SrlZhYnq4LBgSTQewM'
-const token = 'EAAMVeXYpmN4BAGOsuAhPUwag9ZAzNuQUT8CHEDYnZBIZCerZB30376VeK0pBhXFCF8VVoxkgZC3iV71aCCg0DMPDrgACyGuWOtOYqqDvMoiSRouR8rNXi0MLlj7fUpzGHUShLaVnZAFLl5qWjzOA58Un9f1PHLAQaC35b8GclzRQXw11ZC5hZADF9vCSMexYmBfLHz2iKHHw9gZDZD'
+const token = 'EAAMVeXYpmN4BABOEJyEFM8Vpd33e6MQZCFm4PCZC2HytZAW2QMHpW4uzEi93NeqPbl8VeZBQCu2B8NpBWwRzXlp2MV8yfiR1pPi43wPcH4RjzZB1OMbii5iLGmTxVPX7wWZBKdvrZAKj3T4HrOwft2ZCjkZCLZBB6QWSAq7YApBtoXkWAaFrgwZA1TRV1hkywFRBQZBlJ77Cwl97NgZDZD'
 
 
 
@@ -164,17 +156,19 @@ function doPost(request) {
  */
 function doGet(e) {
     return ContentService.createTextOutput(JSON.stringify(e))
-  }
-  
-  /**
-  *  ------------------------------------------- webHook ------------------------------------------- 
-  */
-  
-  function webHook(contents) {
+}
+
+
+
+/**
+*  ------------------------------------------- webHook ------------------------------------------- 
+*/
+
+function webHook(contents) {
     // logBot('WTF' + JSON.stringify(contents) ) // Important to somtimes on
     const isMsg = !!contents.message
     const isButton = !!contents.callback_query
-    const sender = (isMsg) ? contents?.message?.from?.id : contents?.callback_query?.from?.id 
+    const sender = (isMsg) ? contents?.message?.from?.id : contents?.callback_query?.from?.id
     const msg = (isMsg) ? contents?.message?.text.toString().trim() : contents?.callback_query?.data // ............... take msg and remove spaces
     logBot('Log >>> ID: ' + sender + ' say ' + msg)
     const isCommand = msg.charAt(0) == '/'
@@ -182,7 +176,7 @@ function doGet(e) {
     const command = msg.substring(1, msg.length) // .................................................................... example: '/start'
     if (commands[command]) commands[command](sender) // ................................................................ start the command
     else return sendMessage(sender, "I do not understand this command! Do you wont get help?.", keyboard.basic)
-  }
+}
 
 /**
 *  ------------------------------------------- Commands ------------------------------------------- 
