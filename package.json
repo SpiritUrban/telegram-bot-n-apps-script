@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/SpiritUrban/telegram-bot-n-apps-script#readme",
   "dependencies": {
+    "@types/google-apps-script": "^1.0.57",
     "axios": "^1.2.2",
     "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.6",
